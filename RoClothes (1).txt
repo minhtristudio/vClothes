@@ -1,7 +1,7 @@
 --[[	
 
 	/ ｒｏｃｌｏｔｈｅｓ
-	Version - 0.0.1
+	Version - 0.1.2
 	| RoClothes is a Client-Sided Exploiting Script, that allows the player to have nude BodyParts/Clothes
 	Can be used on any executor
 	
@@ -16036,7 +16036,7 @@ end
 	end)
 	
 	-- Load library
-GUIObject.Screen.Visible = false
+GUIObject.Screen.Enabled = false -- Ẩn toàn bộ giao diện
 local vClothesUI = loadstring(game:HttpGet("https://github.com/minhtristudio/vClothes/raw/refs/heads/main/NeedUI"))()
 
 -- Tạo cửa sổ chính

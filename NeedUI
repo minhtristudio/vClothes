@@ -1,6 +1,3 @@
--- vClothes UI Library v2.0 - Enhanced Edition
--- Tạo bởi Assistant - Nâng cấp giao diện và tính năng
-
 local vClothesUI = {}
 
 -- Services
@@ -13,8 +10,8 @@ local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
 -- Tween Info
-local tweenInfo = TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-local fastTween = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+local fastTween = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 
 -- Enhanced Color Scheme
 local colors = {
@@ -31,8 +28,7 @@ local colors = {
     border = Color3.fromRGB(55, 55, 60),
     success = Color3.fromRGB(87, 242, 135),
     warning = Color3.fromRGB(255, 202, 40),
-    error = Color3.fromRGB(237, 66, 69),
-    shadow = Color3.fromRGB(0, 0, 0)
+    error = Color3.fromRGB(237, 66, 69)
 }
 
 function vClothesUI:CreateWindow(title, config)
@@ -50,27 +46,12 @@ function vClothesUI:CreateWindow(title, config)
     screenGui.ResetOnSpawn = false
     screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     
-    -- Main Container với shadow
-    local shadowFrame = Instance.new("Frame")
-    shadowFrame.Name = "ShadowFrame"
-    shadowFrame.Parent = screenGui
-    shadowFrame.Size = UDim2.new(0, 570, 0, 420)
-    shadowFrame.Position = UDim2.new(0.5, -285, 0.5, -210)
-    shadowFrame.BackgroundColor3 = colors.shadow
-    shadowFrame.BackgroundTransparency = 0.7
-    shadowFrame.BorderSizePixel = 0
-    shadowFrame.ZIndex = 1
-    
-    local shadowCorner = Instance.new("UICorner")
-    shadowCorner.CornerRadius = UDim.new(0, 12)
-    shadowCorner.Parent = shadowFrame
-    
-    -- Main Frame
+    -- Main Frame (giảm kích thước x3)
     local mainFrame = Instance.new("Frame")
     mainFrame.Name = "MainFrame"
     mainFrame.Parent = screenGui
-    mainFrame.Size = UDim2.new(0, 560, 0, 410)
-    mainFrame.Position = UDim2.new(0.5, -280, 0.5, -205)
+    mainFrame.Size = UDim2.new(0, 187, 0, 137) -- Giảm kích thước x3
+    mainFrame.Position = UDim2.new(0.5, -94, 0.5, -69) -- Điều chỉnh vị trí
     mainFrame.BackgroundColor3 = colors.background
     mainFrame.BorderSizePixel = 0
     mainFrame.Active = true
@@ -78,51 +59,42 @@ function vClothesUI:CreateWindow(title, config)
     mainFrame.ZIndex = 2
     
     local mainCorner = Instance.new("UICorner")
-    mainCorner.CornerRadius = UDim.new(0, 10)
+    mainCorner.CornerRadius = UDim.new(0, 6) -- Bo góc nhỏ hơn
     mainCorner.Parent = mainFrame
     
-    -- Gradient overlay
-    local gradient = Instance.new("UIGradient")
-    gradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(25, 25, 30)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(18, 18, 22))
-    })
-    gradient.Rotation = 45
-    gradient.Parent = mainFrame
-    
-    -- Title Bar với nút minimize
+    -- Title Bar với nút minimize (giảm chiều cao)
     local titleBar = Instance.new("Frame")
     titleBar.Name = "TitleBar"
     titleBar.Parent = mainFrame
-    titleBar.Size = UDim2.new(1, 0, 0, 40)
+    titleBar.Size = UDim2.new(1, 0, 0, 30) -- Giảm chiều cao
     titleBar.BackgroundColor3 = colors.backgroundSecondary
     titleBar.BorderSizePixel = 0
     titleBar.ZIndex = 3
     
     local titleCorner = Instance.new("UICorner")
-    titleCorner.CornerRadius = UDim.new(0, 10)
+    titleCorner.CornerRadius = UDim.new(0, 6)
     titleCorner.Parent = titleBar
     
     local titleFix = Instance.new("Frame")
     titleFix.Parent = titleBar
-    titleFix.Size = UDim2.new(1, 0, 0, 10)
-    titleFix.Position = UDim2.new(0, 0, 1, -10)
+    titleFix.Size = UDim2.new(1, 0, 0, 6) -- Giảm kích thước
+    titleFix.Position = UDim2.new(0, 0, 1, -6)
     titleFix.BackgroundColor3 = colors.backgroundSecondary
     titleFix.BorderSizePixel = 0
     titleFix.ZIndex = 3
     
-    -- Logo/Icon
+    -- Logo/Icon (kích thước nhỏ hơn)
     local logoFrame = Instance.new("Frame")
     logoFrame.Name = "Logo"
     logoFrame.Parent = titleBar
-    logoFrame.Size = UDim2.new(0, 30, 0, 30)
-    logoFrame.Position = UDim2.new(0, 10, 0.5, -15)
+    logoFrame.Size = UDim2.new(0, 20, 0, 20) -- Giảm kích thước
+    logoFrame.Position = UDim2.new(0, 5, 0.5, -10) -- Điều chỉnh vị trí
     logoFrame.BackgroundColor3 = colors.accent
     logoFrame.BorderSizePixel = 0
     logoFrame.ZIndex = 4
     
     local logoCorner = Instance.new("UICorner")
-    logoCorner.CornerRadius = UDim.new(0, 6)
+    logoCorner.CornerRadius = UDim.new(0, 4) -- Bo góc nhỏ hơn
     logoCorner.Parent = logoFrame
     
     local logoText = Instance.new("TextLabel")
@@ -131,107 +103,107 @@ function vClothesUI:CreateWindow(title, config)
     logoText.BackgroundTransparency = 1
     logoText.Text = "V"
     logoText.TextColor3 = colors.text
-    logoText.TextSize = 16
+    logoText.TextSize = 12 -- Font nhỏ hơn
     logoText.Font = Enum.Font.GothamBold
     logoText.ZIndex = 5
     
-    -- Title
+    -- Title (font nhỏ hơn)
     local titleLabel = Instance.new("TextLabel")
     titleLabel.Name = "Title"
     titleLabel.Parent = titleBar
-    titleLabel.Size = UDim2.new(1, -150, 1, 0)
-    titleLabel.Position = UDim2.new(0, 50, 0, 0)
+    titleLabel.Size = UDim2.new(1, -80, 1, 0) -- Điều chỉnh kích thước
+    titleLabel.Position = UDim2.new(0, 25, 0, 0) -- Điều chỉnh vị trí
     titleLabel.BackgroundTransparency = 1
-    titleLabel.Text = title or "vClothes UI v2.0"
+    titleLabel.Text = title or "vClothes UI"
     titleLabel.TextColor3 = colors.text
-    titleLabel.TextSize = 16
+    titleLabel.TextSize = 12 -- Font nhỏ hơn
     titleLabel.Font = Enum.Font.GothamBold
     titleLabel.TextXAlignment = Enum.TextXAlignment.Left
     titleLabel.ZIndex = 4
     
-    -- Control Buttons Container
+    -- Control Buttons Container (kích thước nhỏ hơn)
     local controlsFrame = Instance.new("Frame")
     controlsFrame.Parent = titleBar
-    controlsFrame.Size = UDim2.new(0, 80, 0, 30)
-    controlsFrame.Position = UDim2.new(1, -90, 0.5, -15)
+    controlsFrame.Size = UDim2.new(0, 60, 0, 25) -- Giảm kích thước
+    controlsFrame.Position = UDim2.new(1, -65, 0.5, -12.5) -- Điều chỉnh vị trí
     controlsFrame.BackgroundTransparency = 1
     controlsFrame.ZIndex = 4
     
-    -- Minimize Button
+    -- Minimize Button (kích thước nhỏ hơn)
     local minimizeBtn = Instance.new("TextButton")
     minimizeBtn.Name = "MinimizeButton"
     minimizeBtn.Parent = controlsFrame
-    minimizeBtn.Size = UDim2.new(0, 35, 0, 25)
-    minimizeBtn.Position = UDim2.new(0, 0, 0.5, -12.5)
+    minimizeBtn.Size = UDim2.new(0, 25, 0, 20) -- Giảm kích thước
+    minimizeBtn.Position = UDim2.new(0, 0, 0.5, -10) -- Điều chỉnh vị trí
     minimizeBtn.BackgroundColor3 = colors.warning
     minimizeBtn.BorderSizePixel = 0
     minimizeBtn.Text = "−"
     minimizeBtn.TextColor3 = colors.text
-    minimizeBtn.TextSize = 16
+    minimizeBtn.TextSize = 12 -- Font nhỏ hơn
     minimizeBtn.Font = Enum.Font.GothamBold
     minimizeBtn.ZIndex = 5
     
     local minimizeBtnCorner = Instance.new("UICorner")
-    minimizeBtnCorner.CornerRadius = UDim.new(0, 4)
+    minimizeBtnCorner.CornerRadius = UDim.new(0, 3) -- Bo góc nhỏ hơn
     minimizeBtnCorner.Parent = minimizeBtn
     
-    -- Close Button
+    -- Close Button (kích thước nhỏ hơn)
     local closeBtn = Instance.new("TextButton")
     closeBtn.Name = "CloseButton"
     closeBtn.Parent = controlsFrame
-    closeBtn.Size = UDim2.new(0, 35, 0, 25)
-    closeBtn.Position = UDim2.new(0, 40, 0.5, -12.5)
+    closeBtn.Size = UDim2.new(0, 25, 0, 20) -- Giảm kích thước
+    closeBtn.Position = UDim2.new(0, 30, 0.5, -10) -- Điều chỉnh vị trí
     closeBtn.BackgroundColor3 = colors.error
     closeBtn.BorderSizePixel = 0
     closeBtn.Text = "×"
     closeBtn.TextColor3 = colors.text
-    closeBtn.TextSize = 18
+    closeBtn.TextSize = 14 -- Font nhỏ hơn
     closeBtn.Font = Enum.Font.GothamBold
     closeBtn.ZIndex = 5
     
     local closeBtnCorner = Instance.new("UICorner")
-    closeBtnCorner.CornerRadius = UDim.new(0, 4)
+    closeBtnCorner.CornerRadius = UDim.new(0, 3) -- Bo góc nhỏ hơn
     closeBtnCorner.Parent = closeBtn
     
-    -- Enhanced Sidebar
+    -- Enhanced Sidebar (kích thước nhỏ hơn)
     local sidebar = Instance.new("Frame")
     sidebar.Name = "Sidebar"
     sidebar.Parent = mainFrame
-    sidebar.Size = UDim2.new(0, 160, 1, -40)
-    sidebar.Position = UDim2.new(0, 0, 0, 40)
+    sidebar.Size = UDim2.new(0, 50, 1, -30) -- Giảm kích thước
+    sidebar.Position = UDim2.new(0, 0, 0, 30) -- Điều chỉnh vị trí
     sidebar.BackgroundColor3 = colors.sidebar
     sidebar.BorderSizePixel = 0
     sidebar.ZIndex = 3
     
     local sidebarCorner = Instance.new("UICorner")
-    sidebarCorner.CornerRadius = UDim.new(0, 10)
+    sidebarCorner.CornerRadius = UDim.new(0, 6) -- Bo góc nhỏ hơn
     sidebarCorner.Parent = sidebar
     
     local sidebarFix = Instance.new("Frame")
     sidebarFix.Parent = sidebar
-    sidebarFix.Size = UDim2.new(0, 10, 1, 0)
-    sidebarFix.Position = UDim2.new(1, -10, 0, 0)
+    sidebarFix.Size = UDim2.new(0, 6, 1, 0) -- Giảm kích thước
+    sidebarFix.Position = UDim2.new(1, -6, 0, 0)
     sidebarFix.BackgroundColor3 = colors.sidebar
     sidebarFix.BorderSizePixel = 0
     sidebarFix.ZIndex = 3
     
     local sidebarFix2 = Instance.new("Frame")
     sidebarFix2.Parent = sidebar
-    sidebarFix2.Size = UDim2.new(1, 0, 0, 10)
+    sidebarFix2.Size = UDim2.new(1, 0, 0, 6) -- Giảm kích thước
     sidebarFix2.Position = UDim2.new(0, 0, 0, 0)
     sidebarFix2.BackgroundColor3 = colors.sidebar
     sidebarFix2.BorderSizePixel = 0
     sidebarFix2.ZIndex = 3
     
-    -- Tab List
+    -- Tab List (kích thước nhỏ hơn)
     local tabList = Instance.new("ScrollingFrame")
     tabList.Name = "TabList"
     tabList.Parent = sidebar
-    tabList.Size = UDim2.new(1, -12, 1, -15)
-    tabList.Position = UDim2.new(0, 6, 0, 10)
+    tabList.Size = UDim2.new(1, -4, 1, -8) -- Giảm kích thước
+    tabList.Position = UDim2.new(0, 2, 0, 5) -- Điều chỉnh vị trí
     tabList.BackgroundTransparency = 1
     tabList.BorderSizePixel = 0
-    tabList.ScrollBarThickness = 3
+    tabList.ScrollBarThickness = 2 -- Thanh cuộn mỏng hơn
     tabList.ScrollBarImageColor3 = colors.accent
     tabList.CanvasSize = UDim2.new(0, 0, 0, 0)
     tabList.ZIndex = 4
@@ -240,30 +212,27 @@ function vClothesUI:CreateWindow(title, config)
     tabListLayout.Parent = tabList
     tabListLayout.FillDirection = Enum.FillDirection.Vertical
     tabListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    tabListLayout.Padding = UDim.new(0, 6)
+    tabListLayout.Padding = UDim.new(0, 4) -- Khoảng cách nhỏ hơn
     
-    -- Content Area
+    -- Content Area (kích thước nhỏ hơn)
     local contentArea = Instance.new("Frame")
     contentArea.Name = "ContentArea"
     contentArea.Parent = mainFrame
-    contentArea.Size = UDim2.new(1, -170, 1, -50)
-    contentArea.Position = UDim2.new(0, 165, 0, 45)
+    contentArea.Size = UDim2.new(1, -55, 1, -35) -- Giảm kích thước
+    contentArea.Position = UDim2.new(0, 55, 0, 35) -- Điều chỉnh vị trí
     contentArea.BackgroundTransparency = 1
     contentArea.BorderSizePixel = 0
     contentArea.ZIndex = 3
     
     window.screenGui = screenGui
     window.mainFrame = mainFrame
-    window.shadowFrame = shadowFrame
     window.sidebar = sidebar
     window.tabList = tabList
     window.contentArea = contentArea
     
     -- Minimize/Restore functionality
     local originalSize = mainFrame.Size
-    local originalShadowSize = shadowFrame.Size
-    local minimizedSize = UDim2.new(0, 560, 0, 40)
-    local minimizedShadowSize = UDim2.new(0, 570, 0, 50)
+    local minimizedSize = UDim2.new(0, 187, 0, 30) -- Kích thước thu nhỏ
     
     minimizeBtn.MouseButton1Click:Connect(function()
         window.minimized = not window.minimized
@@ -271,16 +240,12 @@ function vClothesUI:CreateWindow(title, config)
         if window.minimized then
             minimizeBtn.Text = "□"
             TweenService:Create(mainFrame, tweenInfo, {Size = minimizedSize}):Play()
-            TweenService:Create(shadowFrame, tweenInfo, {Size = minimizedShadowSize}):Play()
-            
             sidebar.Visible = false
             contentArea.Visible = false
         else
             minimizeBtn.Text = "−"
             TweenService:Create(mainFrame, tweenInfo, {Size = originalSize}):Play()
-            TweenService:Create(shadowFrame, tweenInfo, {Size = originalShadowSize}):Play()
-            
-            wait(0.2)
+            wait(0.15)
             sidebar.Visible = true
             contentArea.Visible = true
         end
@@ -288,34 +253,33 @@ function vClothesUI:CreateWindow(title, config)
     
     closeBtn.MouseButton1Click:Connect(function()
         TweenService:Create(mainFrame, tweenInfo, {Size = UDim2.new(0, 0, 0, 0)}):Play()
-        TweenService:Create(shadowFrame, tweenInfo, {Size = UDim2.new(0, 0, 0, 0), BackgroundTransparency = 1}):Play()
-        wait(0.4)
+        wait(0.3)
         screenGui:Destroy()
     end)
     
     -- Hover effects for buttons
     for _, btn in pairs({minimizeBtn, closeBtn}) do
         btn.MouseEnter:Connect(function()
-            TweenService:Create(btn, fastTween, {Size = UDim2.new(0, 37, 0, 27)}):Play()
+            TweenService:Create(btn, fastTween, {Size = UDim2.new(0, 27, 0, 22)}):Play()
         end)
         
         btn.MouseLeave:Connect(function()
-            TweenService:Create(btn, fastTween, {Size = UDim2.new(0, 35, 0, 25)}):Play()
+            TweenService:Create(btn, fastTween, {Size = UDim2.new(0, 25, 0, 20)}):Play()
         end)
     end
     
-    -- Tạo Tab với enhanced design
+    -- Tạo Tab với thiết kế tối giản
     function window:CreateTab(name, icon)
         local tab = {}
         tab.name = name
         tab.elements = {}
         tab.toggleBoxes = {}
         
-        -- Tab Button với enhanced design
+        -- Tab Button với kích thước nhỏ hơn
         local tabBtn = Instance.new("TextButton")
         tabBtn.Name = name .. "Tab"
         tabBtn.Parent = tabList
-        tabBtn.Size = UDim2.new(1, 0, 0, 45)
+        tabBtn.Size = UDim2.new(1, 0, 0, 35) -- Giảm chiều cao
         tabBtn.BackgroundColor3 = colors.hover
         tabBtn.BackgroundTransparency = 1
         tabBtn.BorderSizePixel = 0
@@ -323,56 +287,56 @@ function vClothesUI:CreateWindow(title, config)
         tabBtn.ZIndex = 5
         
         local tabBtnCorner = Instance.new("UICorner")
-        tabBtnCorner.CornerRadius = UDim.new(0, 8)
+        tabBtnCorner.CornerRadius = UDim.new(0, 5) -- Bo góc nhỏ hơn
         tabBtnCorner.Parent = tabBtn
         
-        -- Tab Icon
+        -- Tab Icon (kích thước nhỏ hơn)
         local tabIcon = Instance.new("TextLabel")
         tabIcon.Parent = tabBtn
-        tabIcon.Size = UDim2.new(0, 20, 0, 20)
-        tabIcon.Position = UDim2.new(0, 15, 0.5, -10)
+        tabIcon.Size = UDim2.new(0, 15, 0, 15) -- Giảm kích thước
+        tabIcon.Position = UDim2.new(0, 5, 0.5, -7.5) -- Điều chỉnh vị trí
         tabIcon.BackgroundTransparency = 1
         tabIcon.Text = icon or "●"
         tabIcon.TextColor3 = colors.textDim
-        tabIcon.TextSize = 16
+        tabIcon.TextSize = 12 -- Font nhỏ hơn
         tabIcon.Font = Enum.Font.Gotham
         tabIcon.ZIndex = 6
         
-        -- Tab Label
+        -- Tab Label (font nhỏ hơn)
         local tabLabel = Instance.new("TextLabel")
         tabLabel.Parent = tabBtn
-        tabLabel.Size = UDim2.new(1, -50, 1, 0)
-        tabLabel.Position = UDim2.new(0, 45, 0, 0)
+        tabLabel.Size = UDim2.new(1, -25, 1, 0) -- Điều chỉnh kích thước
+        tabLabel.Position = UDim2.new(0, 25, 0, 0) -- Điều chỉnh vị trí
         tabLabel.BackgroundTransparency = 1
         tabLabel.Text = name
         tabLabel.TextColor3 = colors.textDim
-        tabLabel.TextSize = 14
+        tabLabel.TextSize = 10 -- Font nhỏ hơn
         tabLabel.Font = Enum.Font.Gotham
         tabLabel.TextXAlignment = Enum.TextXAlignment.Left
         tabLabel.TextTruncate = Enum.TextTruncate.AtEnd
         tabLabel.ZIndex = 6
         
-        -- Active Indicator
+        -- Active Indicator (mỏng hơn)
         local activeIndicator = Instance.new("Frame")
         activeIndicator.Parent = tabBtn
-        activeIndicator.Size = UDim2.new(0, 3, 0, 0)
+        activeIndicator.Size = UDim2.new(0, 2, 0, 0) -- Mỏng hơn
         activeIndicator.Position = UDim2.new(0, 0, 0.5, 0)
         activeIndicator.BackgroundColor3 = colors.accent
         activeIndicator.BorderSizePixel = 0
         activeIndicator.ZIndex = 6
         
         local indicatorCorner = Instance.new("UICorner")
-        indicatorCorner.CornerRadius = UDim.new(0, 2)
+        indicatorCorner.CornerRadius = UDim.new(0, 1) -- Bo góc nhỏ hơn
         indicatorCorner.Parent = activeIndicator
         
-        -- Tab Content
+        -- Tab Content (kích thước nhỏ hơn)
         local tabContent = Instance.new("ScrollingFrame")
         tabContent.Name = name .. "Content"
         tabContent.Parent = contentArea
         tabContent.Size = UDim2.new(1, 0, 1, 0)
         tabContent.BackgroundTransparency = 1
         tabContent.BorderSizePixel = 0
-        tabContent.ScrollBarThickness = 3
+        tabContent.ScrollBarThickness = 2 -- Thanh cuộn mỏng hơn
         tabContent.ScrollBarImageColor3 = colors.accent
         tabContent.CanvasSize = UDim2.new(0, 0, 0, 0)
         tabContent.Visible = false
@@ -382,13 +346,13 @@ function vClothesUI:CreateWindow(title, config)
         contentLayout.Parent = tabContent
         contentLayout.FillDirection = Enum.FillDirection.Vertical
         contentLayout.SortOrder = Enum.SortOrder.LayoutOrder
-        contentLayout.Padding = UDim.new(0, 10)
+        contentLayout.Padding = UDim.new(0, 6) -- Khoảng cách nhỏ hơn
         
         local contentPadding = Instance.new("UIPadding")
-        contentPadding.PaddingTop = UDim.new(0, 15)
-        contentPadding.PaddingBottom = UDim.new(0, 15)
-        contentPadding.PaddingLeft = UDim.new(0, 15)
-        contentPadding.PaddingRight = UDim.new(0, 15)
+        contentPadding.PaddingTop = UDim.new(0, 8) -- Giảm padding
+        contentPadding.PaddingBottom = UDim.new(0, 8)
+        contentPadding.PaddingLeft = UDim.new(0, 8)
+        contentPadding.PaddingRight = UDim.new(0, 8)
         contentPadding.Parent = tabContent
         
         tab.button = tabBtn
@@ -422,7 +386,7 @@ function vClothesUI:CreateWindow(title, config)
         
         -- Update canvas size
         contentLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-            tabContent.CanvasSize = UDim2.new(0, 0, 0, contentLayout.AbsoluteContentSize.Y + 30)
+            tabContent.CanvasSize = UDim2.new(0, 0, 0, contentLayout.AbsoluteContentSize.Y + 16)
         end)
         
         window.tabs[#window.tabs + 1] = tab
@@ -432,103 +396,94 @@ function vClothesUI:CreateWindow(title, config)
         end
         
         tabListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-            tabList.CanvasSize = UDim2.new(0, 0, 0, tabListLayout.AbsoluteContentSize.Y + 20)
+            tabList.CanvasSize = UDim2.new(0, 0, 0, tabListLayout.AbsoluteContentSize.Y + 12)
         end)
         
-        -- Enhanced Button
+        -- Enhanced Button (kích thước nhỏ hơn)
         function tab:CreateButton(text, callback)
             local btn = Instance.new("TextButton")
             btn.Name = text .. "Button"
             btn.Parent = tabContent
-            btn.Size = UDim2.new(1, 0, 0, 40)
+            btn.Size = UDim2.new(1, 0, 0, 30) -- Giảm chiều cao
             btn.BackgroundColor3 = colors.accent
             btn.BorderSizePixel = 0
             btn.Text = text
             btn.TextColor3 = colors.text
-            btn.TextSize = 14
+            btn.TextSize = 12 -- Font nhỏ hơn
             btn.Font = Enum.Font.GothamMedium
             btn.ZIndex = 5
             
             local btnCorner = Instance.new("UICorner")
-            btnCorner.CornerRadius = UDim.new(0, 8)
+            btnCorner.CornerRadius = UDim.new(0, 5) -- Bo góc nhỏ hơn
             btnCorner.Parent = btn
             
-            -- Gradient
-            local btnGradient = Instance.new("UIGradient")
-            btnGradient.Color = ColorSequence.new({
-                ColorSequenceKeypoint.new(0, colors.accent),
-                ColorSequenceKeypoint.new(1, colors.accentHover)
-            })
-            btnGradient.Rotation = 45
-            btnGradient.Parent = btn
-            
             btn.MouseButton1Click:Connect(function()
-                TweenService:Create(btn, TweenInfo.new(0.1), {Size = UDim2.new(1, -4, 0, 36)}):Play()
+                TweenService:Create(btn, TweenInfo.new(0.1), {Size = UDim2.new(1, -2, 0, 28)}):Play()
                 wait(0.1)
-                TweenService:Create(btn, TweenInfo.new(0.1), {Size = UDim2.new(1, 0, 0, 40)}):Play()
+                TweenService:Create(btn, TweenInfo.new(0.1), {Size = UDim2.new(1, 0, 0, 30)}):Play()
                 if callback then callback() end
             end)
             
             btn.MouseEnter:Connect(function()
-                TweenService:Create(btnGradient, fastTween, {Rotation = 90}):Play()
+                TweenService:Create(btn, fastTween, {BackgroundColor3 = colors.accentHover}):Play()
             end)
             
             btn.MouseLeave:Connect(function()
-                TweenService:Create(btnGradient, fastTween, {Rotation = 45}):Play()
+                TweenService:Create(btn, fastTween, {BackgroundColor3 = colors.accent}):Play()
             end)
             
             return btn
         end
         
-        -- Enhanced Toggle
+        -- Enhanced Toggle (kích thước nhỏ hơn)
         function tab:CreateToggle(text, defaultValue, callback)
             local toggleFrame = Instance.new("Frame")
             toggleFrame.Name = text .. "Toggle"
             toggleFrame.Parent = tabContent
-            toggleFrame.Size = UDim2.new(1, 0, 0, 40)
+            toggleFrame.Size = UDim2.new(1, 0, 0, 30) -- Giảm chiều cao
             toggleFrame.BackgroundColor3 = colors.backgroundSecondary
             toggleFrame.BorderSizePixel = 0
             toggleFrame.ZIndex = 5
             
             local toggleCorner = Instance.new("UICorner")
-            toggleCorner.CornerRadius = UDim.new(0, 8)
+            toggleCorner.CornerRadius = UDim.new(0, 5) -- Bo góc nhỏ hơn
             toggleCorner.Parent = toggleFrame
             
             local toggleLabel = Instance.new("TextLabel")
             toggleLabel.Parent = toggleFrame
-            toggleLabel.Size = UDim2.new(1, -60, 1, 0)
-            toggleLabel.Position = UDim2.new(0, 15, 0, 0)
+            toggleLabel.Size = UDim2.new(1, -40, 1, 0) -- Điều chỉnh kích thước
+            toggleLabel.Position = UDim2.new(0, 8, 0, 0) -- Điều chỉnh vị trí
             toggleLabel.BackgroundTransparency = 1
             toggleLabel.Text = text
             toggleLabel.TextColor3 = colors.text
-            toggleLabel.TextSize = 14
+            toggleLabel.TextSize = 10 -- Font nhỏ hơn
             toggleLabel.Font = Enum.Font.GothamMedium
             toggleLabel.TextXAlignment = Enum.TextXAlignment.Left
             toggleLabel.ZIndex = 6
             
             local toggleBtn = Instance.new("TextButton")
             toggleBtn.Parent = toggleFrame
-            toggleBtn.Size = UDim2.new(0, 40, 0, 20)
-            toggleBtn.Position = UDim2.new(1, -50, 0.5, -10)
+            toggleBtn.Size = UDim2.new(0, 30, 0, 15) -- Giảm kích thước
+            toggleBtn.Position = UDim2.new(1, -35, 0.5, -7.5) -- Điều chỉnh vị trí
             toggleBtn.BackgroundColor3 = defaultValue and colors.accent or colors.border
             toggleBtn.BorderSizePixel = 0
             toggleBtn.Text = ""
             toggleBtn.ZIndex = 6
             
             local toggleBtnCorner = Instance.new("UICorner")
-            toggleBtnCorner.CornerRadius = UDim.new(0, 10)
+            toggleBtnCorner.CornerRadius = UDim.new(0, 7) -- Bo góc nhỏ hơn
             toggleBtnCorner.Parent = toggleBtn
             
             local toggleIndicator = Instance.new("Frame")
             toggleIndicator.Parent = toggleBtn
-            toggleIndicator.Size = UDim2.new(0, 16, 0, 16)
-            toggleIndicator.Position = defaultValue and UDim2.new(0, 22, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
+            toggleIndicator.Size = UDim2.new(0, 12, 0, 12) -- Giảm kích thước
+            toggleIndicator.Position = defaultValue and UDim2.new(0, 17, 0.5, -6) or UDim2.new(0, 1, 0.5, -6)
             toggleIndicator.BackgroundColor3 = colors.text
             toggleIndicator.BorderSizePixel = 0
             toggleIndicator.ZIndex = 7
             
             local indicatorCorner = Instance.new("UICorner")
-            indicatorCorner.CornerRadius = UDim.new(0, 8)
+            indicatorCorner.CornerRadius = UDim.new(0, 6) -- Bo góc nhỏ hơn
             indicatorCorner.Parent = toggleIndicator
             
             local toggled = defaultValue or false
@@ -537,7 +492,7 @@ function vClothesUI:CreateWindow(title, config)
                 toggled = not toggled
                 
                 local btnColor = toggled and colors.accent or colors.border
-                local indicatorPos = toggled and UDim2.new(0, 22, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
+                local indicatorPos = toggled and UDim2.new(0, 17, 0.5, -6) or UDim2.new(0, 1, 0.5, -6)
                 
                 TweenService:Create(toggleBtn, tweenInfo, {BackgroundColor3 = btnColor}):Play()
                 TweenService:Create(toggleIndicator, tweenInfo, {Position = indicatorPos}):Play()
@@ -548,49 +503,49 @@ function vClothesUI:CreateWindow(title, config)
             return toggleFrame
         end
         
-        -- Enhanced Input
+        -- Enhanced Input (kích thước nhỏ hơn)
         function tab:CreateInput(text, placeholder, callback)
             local inputFrame = Instance.new("Frame")
             inputFrame.Name = text .. "Input"
             inputFrame.Parent = tabContent
-            inputFrame.Size = UDim2.new(1, 0, 0, 70)
+            inputFrame.Size = UDim2.new(1, 0, 0, 50) -- Giảm chiều cao
             inputFrame.BackgroundTransparency = 1
             inputFrame.BorderSizePixel = 0
             inputFrame.ZIndex = 5
             
             local inputLabel = Instance.new("TextLabel")
             inputLabel.Parent = inputFrame
-            inputLabel.Size = UDim2.new(1, 0, 0, 25)
+            inputLabel.Size = UDim2.new(1, 0, 0, 18) -- Giảm chiều cao
             inputLabel.BackgroundTransparency = 1
             inputLabel.Text = text
             inputLabel.TextColor3 = colors.text
-            inputLabel.TextSize = 14
+            inputLabel.TextSize = 10 -- Font nhỏ hơn
             inputLabel.Font = Enum.Font.GothamMedium
             inputLabel.TextXAlignment = Enum.TextXAlignment.Left
             inputLabel.ZIndex = 6
             
             local inputBox = Instance.new("TextBox")
             inputBox.Parent = inputFrame
-            inputBox.Size = UDim2.new(1, 0, 0, 40)
-            inputBox.Position = UDim2.new(0, 0, 0, 30)
+            inputBox.Size = UDim2.new(1, 0, 0, 30) -- Giảm chiều cao
+            inputBox.Position = UDim2.new(0, 0, 0, 20) -- Điều chỉnh vị trí
             inputBox.BackgroundColor3 = colors.backgroundSecondary
             inputBox.BorderSizePixel = 0
             inputBox.PlaceholderText = placeholder or ""
             inputBox.Text = ""
             inputBox.TextColor3 = colors.text
             inputBox.PlaceholderColor3 = colors.textDim
-            inputBox.TextSize = 14
+            inputBox.TextSize = 12 -- Font nhỏ hơn
             inputBox.Font = Enum.Font.Gotham
             inputBox.ClearTextOnFocus = false
             inputBox.ZIndex = 6
             
             local inputCorner = Instance.new("UICorner")
-            inputCorner.CornerRadius = UDim.new(0, 8)
+            inputCorner.CornerRadius = UDim.new(0, 5) -- Bo góc nhỏ hơn
             inputCorner.Parent = inputBox
             
             local inputPadding = Instance.new("UIPadding")
-            inputPadding.PaddingLeft = UDim.new(0, 15)
-            inputPadding.PaddingRight = UDim.new(0, 15)
+            inputPadding.PaddingLeft = UDim.new(0, 8) -- Giảm padding
+            inputPadding.PaddingRight = UDim.new(0, 8)
             inputPadding.Parent = inputBox
             
             -- Focus effects
@@ -606,20 +561,20 @@ function vClothesUI:CreateWindow(title, config)
             return inputBox
         end
         
-        -- Enhanced Toggle Box Container với Auto Layout
+        -- Enhanced Toggle Box Container với Auto Layout (kích thước nhỏ hơn)
         function tab:CreateToggleBoxContainer()
             local containerFrame = Instance.new("Frame")
             containerFrame.Name = "ToggleBoxContainer"
             containerFrame.Parent = tabContent
-            containerFrame.Size = UDim2.new(1, 0, 0, 50)
+            containerFrame.Size = UDim2.new(1, 0, 0, 40) -- Giảm chiều cao
             containerFrame.BackgroundTransparency = 1
             containerFrame.BorderSizePixel = 0
             containerFrame.ZIndex = 5
             
             local containerLayout = Instance.new("UIGridLayout")
             containerLayout.Parent = containerFrame
-            containerLayout.CellSize = UDim2.new(0, 115, 0, 40)
-            containerLayout.CellPadding = UDim2.new(0, 8, 0, 8)
+            containerLayout.CellSize = UDim2.new(0, 50, 0, 25) -- Ô nhỏ hơn
+            containerLayout.CellPadding = UDim2.new(0, 4, 0, 4) -- Khoảng cách nhỏ hơn
             containerLayout.SortOrder = Enum.SortOrder.LayoutOrder
             containerLayout.FillDirection = Enum.FillDirection.Horizontal
             containerLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
@@ -631,7 +586,7 @@ function vClothesUI:CreateWindow(title, config)
             local function updateContainerSize()
                 local totalBoxes = #toggleBoxes
                 local rows = math.ceil(totalBoxes / 3)
-                local newHeight = math.max(50, rows * 48) -- 40 + 8 padding
+                local newHeight = math.max(40, rows * 29) -- 25 + 4 padding
                 containerFrame.Size = UDim2.new(1, 0, 0, newHeight)
             end
             
@@ -646,7 +601,7 @@ function vClothesUI:CreateWindow(title, config)
             return container
         end
         
-        -- Enhanced Toggle Box với Auto-arrangement
+        -- Enhanced Toggle Box với Auto-arrangement (kích thước nhỏ hơn)
         function tab:CreateToggleBox(text, defaultValue, callback, container)
             if not container then
                 container = tab:CreateToggleBoxContainer()
@@ -655,33 +610,19 @@ function vClothesUI:CreateWindow(title, config)
             local boxBtn = Instance.new("TextButton")
             boxBtn.Name = text .. "ToggleBox"
             boxBtn.Parent = container.frame
-            boxBtn.Size = UDim2.new(0, 115, 0, 40)
+            boxBtn.Size = UDim2.new(0, 50, 0, 25) -- Giảm kích thước
             boxBtn.BackgroundColor3 = defaultValue and colors.accent or colors.backgroundSecondary
             boxBtn.BorderSizePixel = 0
             boxBtn.Text = text
             boxBtn.TextColor3 = colors.text
-            boxBtn.TextSize = 12
+            boxBtn.TextSize = 10 -- Font nhỏ hơn
             boxBtn.Font = Enum.Font.GothamMedium
             boxBtn.TextWrapped = true
             boxBtn.ZIndex = 6
             
             local boxCorner = Instance.new("UICorner")
-            boxCorner.CornerRadius = UDim.new(0, 8)
+            boxCorner.CornerRadius = UDim.new(0, 4) -- Bo góc nhỏ hơn
             boxCorner.Parent = boxBtn
-            
-            -- Glow effect khi active
-            local glowFrame = Instance.new("Frame")
-            glowFrame.Parent = boxBtn
-            glowFrame.Size = UDim2.new(1, 4, 1, 4)
-            glowFrame.Position = UDim2.new(0, -2, 0, -2)
-            glowFrame.BackgroundColor3 = colors.accent
-            glowFrame.BackgroundTransparency = defaultValue and 0.7 or 1
-            glowFrame.BorderSizePixel = 0
-            glowFrame.ZIndex = 5
-            
-            local glowCorner = Instance.new("UICorner")
-            glowCorner.CornerRadius = UDim.new(0, 10)
-            glowCorner.Parent = glowFrame
             
             local toggled = defaultValue or false
             
@@ -689,15 +630,12 @@ function vClothesUI:CreateWindow(title, config)
                 toggled = not toggled
                 
                 local btnColor = toggled and colors.accent or colors.backgroundSecondary
-                local glowTransparency = toggled and 0.7 or 1
-                
                 TweenService:Create(boxBtn, tweenInfo, {BackgroundColor3 = btnColor}):Play()
-                TweenService:Create(glowFrame, tweenInfo, {BackgroundTransparency = glowTransparency}):Play()
                 
                 if toggled then
-                    TweenService:Create(boxBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 118, 0, 43)}):Play()
+                    TweenService:Create(boxBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 52, 0, 27)}):Play()
                     wait(0.1)
-                    TweenService:Create(boxBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 115, 0, 40)}):Play()
+                    TweenService:Create(boxBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 50, 0, 25)}):Play()
                 end
                 
                 if callback then callback(toggled) end
@@ -722,62 +660,53 @@ function vClothesUI:CreateWindow(title, config)
             return boxBtn
         end
         
-        -- Enhanced Button Switch (Full Width)
+        -- Enhanced Button Switch (Full Width) (kích thước nhỏ hơn)
         function tab:CreateButtonSwitch(text, options, defaultIndex, callback)
             local switchFrame = Instance.new("Frame")
             switchFrame.Name = text .. "Switch"
             switchFrame.Parent = tabContent
-            switchFrame.Size = UDim2.new(1, 0, 0, 70)
+            switchFrame.Size = UDim2.new(1, 0, 0, 50) -- Giảm chiều cao
             switchFrame.BackgroundTransparency = 1
             switchFrame.BorderSizePixel = 0
             switchFrame.ZIndex = 5
             
             local switchLabel = Instance.new("TextLabel")
             switchLabel.Parent = switchFrame
-            switchLabel.Size = UDim2.new(1, 0, 0, 25)
+            switchLabel.Size = UDim2.new(1, 0, 0, 18) -- Giảm chiều cao
             switchLabel.BackgroundTransparency = 1
             switchLabel.Text = text
             switchLabel.TextColor3 = colors.text
-            switchLabel.TextSize = 14
+            switchLabel.TextSize = 10 -- Font nhỏ hơn
             switchLabel.Font = Enum.Font.GothamMedium
             switchLabel.TextXAlignment = Enum.TextXAlignment.Left
             switchLabel.ZIndex = 6
             
             local switchBtn = Instance.new("TextButton")
             switchBtn.Parent = switchFrame
-            switchBtn.Size = UDim2.new(1, 0, 0, 40)
-            switchBtn.Position = UDim2.new(0, 0, 0, 30)
+            switchBtn.Size = UDim2.new(1, 0, 0, 30) -- Giảm chiều cao
+            switchBtn.Position = UDim2.new(0, 0, 0, 20) -- Điều chỉnh vị trí
             switchBtn.BackgroundColor3 = colors.accent
             switchBtn.BorderSizePixel = 0
             switchBtn.TextColor3 = colors.text
-            switchBtn.TextSize = 14
+            switchBtn.TextSize = 10 -- Font nhỏ hơn
             switchBtn.Font = Enum.Font.GothamMedium
             switchBtn.ZIndex = 6
             
             local switchCorner = Instance.new("UICorner")
-            switchCorner.CornerRadius = UDim.new(0, 8)
+            switchCorner.CornerRadius = UDim.new(0, 5) -- Bo góc nhỏ hơn
             switchCorner.Parent = switchBtn
             
-            -- Gradient effect
-            local switchGradient = Instance.new("UIGradient")
-            switchGradient.Color = ColorSequence.new({
-                ColorSequenceKeypoint.new(0, colors.accent),
-                ColorSequenceKeypoint.new(1, colors.accentHover)
-            })
-            switchGradient.Rotation = 45
-            switchGradient.Parent = switchBtn
-            
-            -- Value indicator
+            -- Value indicator (kích thước nhỏ hơn)
             local valueFrame = Instance.new("Frame")
             valueFrame.Parent = switchBtn
-            valueFrame.Size = UDim2.new(0, 30, 0, 30)
-            valueFrame.Position = UDim2.new(1, -35, 0.5, -15)
+            valueFrame.Size = UDim2.new(0, 20, 0, 20) -- Giảm kích thước
+            valueFrame.Position = UDim2.new(1, -25, 0.5, -10) -- Điều chỉnh vị trí
             valueFrame.BackgroundColor3 = colors.backgroundSecondary
             valueFrame.BorderSizePixel = 0
             valueFrame.ZIndex = 7
             
             local valueCorner = Instance.new("UICorner")
-            valueCorner.CornerRadius = UDim.new(0, 6)
+            valueCorner.CornerRadius = UDim.new(0, 4) -- Bo góc nhỏ hơn
             valueCorner.Parent = valueFrame
             
             local valueLabel = Instance.new("TextLabel")
@@ -785,7 +714,7 @@ function vClothesUI:CreateWindow(title, config)
             valueLabel.Size = UDim2.new(1, 0, 1, 0)
             valueLabel.BackgroundTransparency = 1
             valueLabel.TextColor3 = colors.text
-            valueLabel.TextSize = 12
+            valueLabel.TextSize = 10 -- Font nhỏ hơn
             valueLabel.Font = Enum.Font.GothamBold
             valueLabel.ZIndex = 8
             
@@ -807,144 +736,25 @@ function vClothesUI:CreateWindow(title, config)
                 updateDisplay()
                 
                 -- Animation
-                TweenService:Create(valueFrame, TweenInfo.new(0.1), {Size = UDim2.new(0, 35, 0, 35)}):Play()
-                TweenService:Create(switchGradient, fastTween, {Rotation = switchGradient.Rotation + 45}):Play()
+                TweenService:Create(valueFrame, TweenInfo.new(0.1), {Size = UDim2.new(0, 22, 0, 22)}):Play()
                 wait(0.1)
-                TweenService:Create(valueFrame, TweenInfo.new(0.1), {Size = UDim2.new(0, 30, 0, 30)}):Play()
+                TweenService:Create(valueFrame, TweenInfo.new(0.1), {Size = UDim2.new(0, 20, 0, 20)}):Play()
                 
                 if callback then callback(options[currentIndex], currentIndex) end
             end)
             
             -- Hover effects
             switchBtn.MouseEnter:Connect(function()
-                TweenService:Create(switchGradient, fastTween, {Rotation = 90}):Play()
+                TweenService:Create(switchBtn, fastTween, {BackgroundColor3 = colors.accentHover}):Play()
                 TweenService:Create(valueFrame, fastTween, {BackgroundColor3 = colors.hover}):Play()
             end)
             
             switchBtn.MouseLeave:Connect(function()
-                TweenService:Create(switchGradient, fastTween, {Rotation = 45}):Play()
+                TweenService:Create(switchBtn, fastTween, {BackgroundColor3 = colors.accent}):Play()
                 TweenService:Create(valueFrame, fastTween, {BackgroundColor3 = colors.backgroundSecondary}):Play()
             end)
             
             return switchBtn
-        end
-        
-        -- Slider Component (Bonus)
-        function tab:CreateSlider(text, min, max, defaultValue, callback)
-            local sliderFrame = Instance.new("Frame")
-            sliderFrame.Name = text .. "Slider"
-            sliderFrame.Parent = tabContent
-            sliderFrame.Size = UDim2.new(1, 0, 0, 70)
-            sliderFrame.BackgroundTransparency = 1
-            sliderFrame.BorderSizePixel = 0
-            sliderFrame.ZIndex = 5
-            
-            local sliderLabel = Instance.new("TextLabel")
-            sliderLabel.Parent = sliderFrame
-            sliderLabel.Size = UDim2.new(0.7, 0, 0, 25)
-            sliderLabel.BackgroundTransparency = 1
-            sliderLabel.Text = text
-            sliderLabel.TextColor3 = colors.text
-            sliderLabel.TextSize = 14
-            sliderLabel.Font = Enum.Font.GothamMedium
-            sliderLabel.TextXAlignment = Enum.TextXAlignment.Left
-            sliderLabel.ZIndex = 6
-            
-            local valueLabel = Instance.new("TextLabel")
-            valueLabel.Parent = sliderFrame
-            valueLabel.Size = UDim2.new(0.3, 0, 0, 25)
-            valueLabel.Position = UDim2.new(0.7, 0, 0, 0)
-            valueLabel.BackgroundTransparency = 1
-            valueLabel.Text = tostring(defaultValue or min)
-            valueLabel.TextColor3 = colors.accent
-            valueLabel.TextSize = 14
-            valueLabel.Font = Enum.Font.GothamBold
-            valueLabel.TextXAlignment = Enum.TextXAlignment.Right
-            valueLabel.ZIndex = 6
-            
-            local sliderTrack = Instance.new("Frame")
-            sliderTrack.Parent = sliderFrame
-            sliderTrack.Size = UDim2.new(1, 0, 0, 6)
-            sliderTrack.Position = UDim2.new(0, 0, 0, 45)
-            sliderTrack.BackgroundColor3 = colors.backgroundSecondary
-            sliderTrack.BorderSizePixel = 0
-            sliderTrack.ZIndex = 6
-            
-            local trackCorner = Instance.new("UICorner")
-            trackCorner.CornerRadius = UDim.new(0, 3)
-            trackCorner.Parent = sliderTrack
-            
-            local sliderFill = Instance.new("Frame")
-            sliderFill.Parent = sliderTrack
-            sliderFill.Size = UDim2.new((defaultValue or min) / max, 0, 1, 0)
-            sliderFill.BackgroundColor3 = colors.accent
-            sliderFill.BorderSizePixel = 0
-            sliderFill.ZIndex = 7
-            
-            local fillCorner = Instance.new("UICorner")
-            fillCorner.CornerRadius = UDim.new(0, 3)
-            fillCorner.Parent = sliderFill
-            
-            local sliderButton = Instance.new("TextButton")
-            sliderButton.Parent = sliderFrame
-            sliderButton.Size = UDim2.new(0, 20, 0, 20)
-            sliderButton.Position = UDim2.new((defaultValue or min) / max, -10, 0, 38)
-            sliderButton.BackgroundColor3 = colors.text
-            sliderButton.BorderSizePixel = 0
-            sliderButton.Text = ""
-            sliderButton.ZIndex = 8
-            
-            local buttonCorner = Instance.new("UICorner")
-            buttonCorner.CornerRadius = UDim.new(0, 10)
-            buttonCorner.Parent = sliderButton
-            
-            local currentValue = defaultValue or min
-            local dragging = false
-            
-            local function updateSlider(value)
-                currentValue = math.clamp(value, min, max)
-                local percentage = (currentValue - min) / (max - min)
-                
-                valueLabel.Text = tostring(math.floor(currentValue * 100) / 100)
-                sliderFill.Size = UDim2.new(percentage, 0, 1, 0)
-                sliderButton.Position = UDim2.new(percentage, -10, 0, 38)
-                
-                if callback then callback(currentValue) end
-            end
-            
-            sliderButton.MouseButton1Down:Connect(function()
-                dragging = true
-            end)
-            
-            UserInputService.InputEnded:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                    dragging = false
-                end
-            end)
-            
-            UserInputService.InputChanged:Connect(function(input)
-                if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-                    local mousePos = input.Position.X
-                    local framePos = sliderTrack.AbsolutePosition.X
-                    local frameSize = sliderTrack.AbsoluteSize.X
-                    local percentage = math.clamp((mousePos - framePos) / frameSize, 0, 1)
-                    local value = min + (max - min) * percentage
-                    updateSlider(value)
-                end
-            end)
-            
-            sliderTrack.InputBegan:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                    local mousePos = input.Position.X
-                    local framePos = sliderTrack.AbsolutePosition.X
-                    local frameSize = sliderTrack.AbsoluteSize.X
-                    local percentage = math.clamp((mousePos - framePos) / frameSize, 0, 1)
-                    local value = min + (max - min) * percentage
-                    updateSlider(value)
-                end
-            end)
-            
-            return sliderFrame
         end
         
         return tab
@@ -957,14 +767,14 @@ function vClothesUI:CreateWindow(title, config)
             TweenService:Create(t.button, fastTween, {BackgroundTransparency = 1}):Play()
             TweenService:Create(t.icon, fastTween, {TextColor3 = colors.textDim}):Play()
             TweenService:Create(t.label, fastTween, {TextColor3 = colors.textDim}):Play()
-            TweenService:Create(t.indicator, fastTween, {Size = UDim2.new(0, 3, 0, 0)}):Play()
+            TweenService:Create(t.indicator, fastTween, {Size = UDim2.new(0, 2, 0, 0)}):Play()
         end
         
         tab.content.Visible = true
         TweenService:Create(tab.button, fastTween, {BackgroundColor3 = colors.hover, BackgroundTransparency = 0}):Play()
         TweenService:Create(tab.icon, fastTween, {TextColor3 = colors.accent}):Play()
         TweenService:Create(tab.label, fastTween, {TextColor3 = colors.text}):Play()
-        TweenService:Create(tab.indicator, fastTween, {Size = UDim2.new(0, 3, 0, 30)}):Play()
+        TweenService:Create(tab.indicator, fastTween, {Size = UDim2.new(0, 2, 0, 25)}):Play()
         
         self.activeTab = tab
     end
@@ -972,16 +782,12 @@ function vClothesUI:CreateWindow(title, config)
     -- Toggle Visibility Function
     function window:Toggle()
         if mainFrame.Visible then
-            TweenService:Create(mainFrame, tweenInfo, {Position = UDim2.new(0.5, -280, 0.5, -250)}):Play()
-            TweenService:Create(shadowFrame, tweenInfo, {Position = UDim2.new(0.5, -285, 0.5, -255)}):Play()
+            TweenService:Create(mainFrame, tweenInfo, {Position = UDim2.new(0.5, -94, 0.5, -100)}):Play()
             wait(0.2)
             mainFrame.Visible = false
-            shadowFrame.Visible = false
         else
             mainFrame.Visible = true
-            shadowFrame.Visible = true
-            TweenService:Create(mainFrame, tweenInfo, {Position = UDim2.new(0.5, -280, 0.5, -205)}):Play()
-            TweenService:Create(shadowFrame, tweenInfo, {Position = UDim2.new(0.5, -285, 0.5, -210)}):Play()
+            TweenService:Create(mainFrame, tweenInfo, {Position = UDim2.new(0.5, -94, 0.5, -69)}):Play()
         end
     end
     
@@ -995,24 +801,12 @@ UserInputService.InputBegan:Connect(function(key, gameProcessed)
             if gui.Name == "vClothesUI_v2" and gui:FindFirstChild("MainFrame") then
                 local mainFrame = gui.MainFrame
                 if mainFrame.Visible then
-                    TweenService:Create(mainFrame, tweenInfo, {Position = UDim2.new(0.5, -280, 0.5, -250)}):Play()
-                    if gui:FindFirstChild("ShadowFrame") then
-                        TweenService:Create(gui.ShadowFrame, tweenInfo, {Position = UDim2.new(0.5, -285, 0.5, -255)}):Play()
-                    end
+                    TweenService:Create(mainFrame, tweenInfo, {Position = UDim2.new(0.5, -94, 0.5, -100)}):Play()
                     wait(0.2)
                     mainFrame.Visible = false
-                    if gui:FindFirstChild("ShadowFrame") then
-                        gui.ShadowFrame.Visible = false
-                    end
                 else
                     mainFrame.Visible = true
-                    if gui:FindFirstChild("ShadowFrame") then
-                        gui.ShadowFrame.Visible = true
-                    end
-                    TweenService:Create(mainFrame, tweenInfo, {Position = UDim2.new(0.5, -280, 0.5, -205)}):Play()
-                    if gui:FindFirstChild("ShadowFrame") then
-                        TweenService:Create(gui.ShadowFrame, tweenInfo, {Position = UDim2.new(0.5, -285, 0.5, -210)}):Play()
-                    end
+                    TweenService:Create(mainFrame, tweenInfo, {Position = UDim2.new(0.5, -94, 0.5, -69)}):Play()
                 end
                 break
             end

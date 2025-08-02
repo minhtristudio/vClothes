@@ -1,7 +1,7 @@
 --[[	
 
-	/ ＲＯＣＬＯＴＨＥＳ
-	Version - 0.7.4
+	/ ｒｏｃｌｏｔｈｅｓ
+	Version - 0.0.1
 	| RoClothes is a Client-Sided Exploiting Script, that allows the player to have nude BodyParts/Clothes
 	Can be used on any executor
 	
@@ -13904,7 +13904,7 @@ end
 	GUIObject.Screen.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 	GUIObject.Screen.ResetOnSpawn = false
 	GUIObject.Screen.Enabled = true
-	GUIObject.Screen.Visible = false
+	
 
 	GUIObject.MobileCloseButtonScreen.Name = "RoClothesCloseButton"
 	GUIObject.MobileCloseButtonScreen.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -16036,7 +16036,7 @@ end
 	end)
 	
 	-- Load library
-
+GUIObject.Screen.Visible = false
 local vClothesUI = loadstring(game:HttpGet("https://github.com/minhtristudio/vClothes/raw/refs/heads/main/NeedUI"))()
 
 -- Tạo cửa sổ chính

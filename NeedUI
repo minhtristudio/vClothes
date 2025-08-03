@@ -1,6 +1,6 @@
 local vClothesUI = {}
 
--- Services
+-- Services v2
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -562,44 +562,83 @@ function vClothesUI:CreateWindow(title, config)
         end
         
         -- Enhanced Toggle Box Container với Auto Layout (kích thước nhỏ hơn)
-        function tab:CreateToggleBoxContainer()
-            local containerFrame = Instance.new("Frame")
-            containerFrame.Name = "ToggleBoxContainer"
-            containerFrame.Parent = tabContent
-            containerFrame.Size = UDim2.new(1, 0, 0, 40) -- Giảm chiều cao
-            containerFrame.BackgroundTransparency = 1
-            containerFrame.BorderSizePixel = 0
-            containerFrame.ZIndex = 5
-            
-            local containerLayout = Instance.new("UIGridLayout")
-            containerLayout.Parent = containerFrame
-            containerLayout.CellSize = UDim2.new(0, 50, 0, 25) -- Ô nhỏ hơn
-            containerLayout.CellPadding = UDim2.new(0, 4, 0, 4) -- Khoảng cách nhỏ hơn
-            containerLayout.SortOrder = Enum.SortOrder.LayoutOrder
-            containerLayout.FillDirection = Enum.FillDirection.Horizontal
-            containerLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
-            containerLayout.VerticalAlignment = Enum.VerticalAlignment.Top
-            
-            local toggleBoxes = {}
-            
-            -- Update container size based on content
-            local function updateContainerSize()
-                local totalBoxes = #toggleBoxes
-                local rows = math.ceil(totalBoxes / 3)
-                local newHeight = math.max(40, rows * 29) -- 25 + 4 padding
-                containerFrame.Size = UDim2.new(1, 0, 0, newHeight)
+function tab:CreateToggleBoxContainer()
+    local containerFrame = Instance.new("Frame")
+    containerFrame.Name = "ToggleBoxContainer"
+    containerFrame.Parent = tabContent
+    containerFrame.Size = UDim2.new(1, 0, 0, 40)
+    containerFrame.BackgroundTransparency = 1
+    containerFrame.BorderSizePixel = 0
+    containerFrame.ZIndex = 5
+    
+    local containerLayout = Instance.new("UIGridLayout")
+    containerLayout.Parent = containerFrame
+    containerLayout.CellSize = UDim2.new(0, 50, 0, 25)
+    containerLayout.CellPadding = UDim2.new(0, 4, 0, 4)
+    containerLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    containerLayout.FillDirection = Enum.FillDirection.Horizontal
+    containerLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
+    containerLayout.VerticalAlignment = Enum.VerticalAlignment.Top
+    
+    local toggleBoxes = {}
+    local toggleCallbacks = {} -- Lưu trữ callback của các toggle box
+    
+    -- Update container size based on content
+    local function updateContainerSize()
+        local totalBoxes = #toggleBoxes
+        local rows = math.ceil(totalBoxes / 3)
+        local newHeight = math.max(40, rows * 29)
+        containerFrame.Size = UDim2.new(1, 0, 0, newHeight)
+    end
+    
+    -- Method để điều khiển toggle từ bên ngoài
+    local function Set(name, state)
+        for _, box in pairs(toggleBoxes) do
+            if box.Name == name.."ToggleBox" then
+                -- Cập nhật trạng thái UI
+                box.BackgroundColor3 = state and colors.accent or colors.backgroundSecondary
+                
+                -- Gọi callback nếu có
+                if toggleCallbacks[name] then
+                    toggleCallbacks[name](state)
+                end
+                break
             end
-            
-            local container = {
-                frame = containerFrame,
-                layout = containerLayout,
-                boxes = toggleBoxes,
-                updateSize = updateContainerSize
-            }
-            
-            window.toggleBoxContainers[#window.toggleBoxContainers + 1] = container
-            return container
         end
+    end
+    
+    -- Method để lấy toggle đang được chọn
+    local function GetCurrent()
+        for name, callback in pairs(toggleCallbacks) do
+            for _, box in pairs(toggleBoxes) do
+                if box.Name == name.."ToggleBox" and box.BackgroundColor3 == colors.accent then
+                    return name
+                end
+            end
+        end
+        return nil
+    end
+    
+    -- Method reset tất cả toggle
+    local function ResetAll()
+        for name, _ in pairs(toggleCallbacks) do
+            Set(name, false)
+        end
+    end
+    
+    local container = {
+        frame = containerFrame,
+        layout = containerLayout,
+        boxes = toggleBoxes,
+        updateSize = updateContainerSize,
+        Set = Set,
+        GetCurrent = GetCurrent,
+        ResetAll = ResetAll
+    }
+    
+    window.toggleBoxContainers[#window.toggleBoxContainers + 1] = container
+    return container
+end
         
         -- Enhanced Toggle Box với Auto-arrangement (kích thước nhỏ hơn)
         function tab:CreateToggleBox(text, defaultValue, callback, container)

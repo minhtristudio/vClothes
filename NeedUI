@@ -1,6 +1,6 @@
 local vClothesUI = {}
 
--- Services v2
+-- Services v3
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -563,141 +563,144 @@ function vClothesUI:CreateWindow(title, config)
         
         -- Enhanced Toggle Box Container với Auto Layout (kích thước nhỏ hơn)
 function tab:CreateToggleBoxContainer()
-    local containerFrame = Instance.new("Frame")
-    containerFrame.Name = "ToggleBoxContainer"
-    containerFrame.Parent = tabContent
-    containerFrame.Size = UDim2.new(1, 0, 0, 40)
-    containerFrame.BackgroundTransparency = 1
-    containerFrame.BorderSizePixel = 0
-    containerFrame.ZIndex = 5
-    
-    local containerLayout = Instance.new("UIGridLayout")
-    containerLayout.Parent = containerFrame
-    containerLayout.CellSize = UDim2.new(0, 50, 0, 25)
-    containerLayout.CellPadding = UDim2.new(0, 4, 0, 4)
-    containerLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    containerLayout.FillDirection = Enum.FillDirection.Horizontal
-    containerLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
-    containerLayout.VerticalAlignment = Enum.VerticalAlignment.Top
-    
-    local toggleBoxes = {}
-    local toggleCallbacks = {} -- Lưu trữ callback của các toggle box
-    
-    -- Update container size based on content
-    local function updateContainerSize()
-        local totalBoxes = #toggleBoxes
-        local rows = math.ceil(totalBoxes / 3)
-        local newHeight = math.max(40, rows * 29)
-        containerFrame.Size = UDim2.new(1, 0, 0, newHeight)
-    end
-    
-    -- Method để điều khiển toggle từ bên ngoài
-    local function Set(name, state)
-        for _, box in pairs(toggleBoxes) do
-            if box.Name == name.."ToggleBox" then
-                -- Cập nhật trạng thái UI
-                box.BackgroundColor3 = state and colors.accent or colors.backgroundSecondary
-                
-                -- Gọi callback nếu có
-                if toggleCallbacks[name] then
-                    toggleCallbacks[name](state)
-                end
-                break
-            end
-        end
-    end
-    
-    -- Method để lấy toggle đang được chọn
-    local function GetCurrent()
-        for name, callback in pairs(toggleCallbacks) do
-            for _, box in pairs(toggleBoxes) do
-                if box.Name == name.."ToggleBox" and box.BackgroundColor3 == colors.accent then
-                    return name
-                end
-            end
-        end
-        return nil
-    end
-    
-    -- Method reset tất cả toggle
-    local function ResetAll()
-        for name, _ in pairs(toggleCallbacks) do
-            Set(name, false)
-        end
-    end
-    
-    local container = {
-        frame = containerFrame,
-        layout = containerLayout,
-        boxes = toggleBoxes,
-        updateSize = updateContainerSize,
-        Set = Set,
-        GetCurrent = GetCurrent,
-        ResetAll = ResetAll
-    }
-    
-    window.toggleBoxContainers[#window.toggleBoxContainers + 1] = container
-    return container
+	local containerFrame = Instance.new("Frame")
+	containerFrame.Name = "ToggleBoxContainer"
+	containerFrame.Parent = tabContent
+	containerFrame.Size = UDim2.new(1, 0, 0, 40)
+	containerFrame.BackgroundTransparency = 1
+	containerFrame.BorderSizePixel = 0
+	containerFrame.ZIndex = 5
+
+	local containerLayout = Instance.new("UIGridLayout")
+	containerLayout.Parent = containerFrame
+	containerLayout.CellSize = UDim2.new(0, 50, 0, 25)
+	containerLayout.CellPadding = UDim2.new(0, 4, 0, 4)
+	containerLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	containerLayout.FillDirection = Enum.FillDirection.Horizontal
+	containerLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
+	containerLayout.VerticalAlignment = Enum.VerticalAlignment.Top
+
+	local toggleBoxes = {}
+	local toggleCallbacks = {} -- Lưu callback theo name
+	local toggleStates = {} -- Trạng thái true/false
+
+	local function updateContainerSize()
+		local totalBoxes = #toggleBoxes
+		local rows = math.ceil(totalBoxes / 3)
+		local newHeight = math.max(40, rows * 29)
+		containerFrame.Size = UDim2.new(1, 0, 0, newHeight)
+	end
+
+	local function Set(name, state)
+		for _, box in pairs(toggleBoxes) do
+			local boxName = box.Name:gsub("ToggleBox$", "")
+			local isTarget = (boxName == name)
+			local wasOn = toggleStates[boxName]
+
+			if isTarget then
+				toggleStates[boxName] = state
+				box.BackgroundColor3 = state and colors.accent or colors.backgroundSecondary
+				if toggleCallbacks[boxName] and (wasOn ~= state) then
+					toggleCallbacks[boxName](state)
+				end
+			else
+				if toggleStates[boxName] then
+					toggleStates[boxName] = false
+					box.BackgroundColor3 = colors.backgroundSecondary
+					if toggleCallbacks[boxName] then
+						toggleCallbacks[boxName](false)
+					end
+				end
+			end
+		end
+	end
+
+	local function GetCurrent()
+		for name, state in pairs(toggleStates) do
+			if state then return name end
+		end
+		return nil
+	end
+
+	local function ResetAll()
+		for name in pairs(toggleStates) do
+			Set(name, false)
+		end
+	end
+
+	local container = {
+		frame = containerFrame,
+		layout = containerLayout,
+		boxes = toggleBoxes,
+		updateSize = updateContainerSize,
+		Set = Set,
+		GetCurrent = GetCurrent,
+		ResetAll = ResetAll,
+		callbacks = toggleCallbacks,
+		states = toggleStates,
+	}
+	
+	window.toggleBoxContainers[#window.toggleBoxContainers + 1] = container
+	return container
 end
-        
-        -- Enhanced Toggle Box với Auto-arrangement (kích thước nhỏ hơn)
-        function tab:CreateToggleBox(text, defaultValue, callback, container)
-            if not container then
-                container = tab:CreateToggleBoxContainer()
-            end
-            
-            local boxBtn = Instance.new("TextButton")
-            boxBtn.Name = text .. "ToggleBox"
-            boxBtn.Parent = container.frame
-            boxBtn.Size = UDim2.new(0, 50, 0, 25) -- Giảm kích thước
-            boxBtn.BackgroundColor3 = defaultValue and colors.accent or colors.backgroundSecondary
-            boxBtn.BorderSizePixel = 0
-            boxBtn.Text = text
-            boxBtn.TextColor3 = colors.text
-            boxBtn.TextSize = 10 -- Font nhỏ hơn
-            boxBtn.Font = Enum.Font.GothamMedium
-            boxBtn.TextWrapped = true
-            boxBtn.ZIndex = 6
-            
-            local boxCorner = Instance.new("UICorner")
-            boxCorner.CornerRadius = UDim.new(0, 4) -- Bo góc nhỏ hơn
-            boxCorner.Parent = boxBtn
-            
-            local toggled = defaultValue or false
-            
-            boxBtn.MouseButton1Click:Connect(function()
-                toggled = not toggled
-                
-                local btnColor = toggled and colors.accent or colors.backgroundSecondary
-                TweenService:Create(boxBtn, tweenInfo, {BackgroundColor3 = btnColor}):Play()
-                
-                if toggled then
-                    TweenService:Create(boxBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 52, 0, 27)}):Play()
-                    wait(0.1)
-                    TweenService:Create(boxBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 50, 0, 25)}):Play()
-                end
-                
-                if callback then callback(toggled) end
-            end)
-            
-            -- Hover effect
-            boxBtn.MouseEnter:Connect(function()
-                if not toggled then
-                    TweenService:Create(boxBtn, fastTween, {BackgroundColor3 = colors.hover}):Play()
-                end
-            end)
-            
-            boxBtn.MouseLeave:Connect(function()
-                if not toggled then
-                    TweenService:Create(boxBtn, fastTween, {BackgroundColor3 = colors.backgroundSecondary}):Play()
-                end
-            end)
-            
-            container.boxes[#container.boxes + 1] = boxBtn
-            container.updateSize()
-            
-            return boxBtn
-        end
+
+       -- ToggleBox
+       function tab:CreateToggleBox(text, defaultValue, callback, container)
+	if not container then
+		container = tab:CreateToggleBoxContainer()
+	end
+
+	local boxBtn = Instance.new("TextButton")
+	boxBtn.Name = text .. "ToggleBox"
+	boxBtn.Parent = container.frame
+	boxBtn.Size = UDim2.new(0, 50, 0, 25)
+	boxBtn.BackgroundColor3 = defaultValue and colors.accent or colors.backgroundSecondary
+	boxBtn.BorderSizePixel = 0
+	boxBtn.Text = text
+	boxBtn.TextColor3 = colors.text
+	boxBtn.TextSize = 10
+	boxBtn.Font = Enum.Font.GothamMedium
+	boxBtn.TextWrapped = true
+	boxBtn.ZIndex = 6
+
+	local boxCorner = Instance.new("UICorner")
+	boxCorner.CornerRadius = UDim.new(0, 4)
+	boxCorner.Parent = boxBtn
+
+	-- Hover effect
+	boxBtn.MouseEnter:Connect(function()
+		if not container.states[text] then
+			TweenService:Create(boxBtn, fastTween, {BackgroundColor3 = colors.hover}):Play()
+		end
+	end)
+
+	boxBtn.MouseLeave:Connect(function()
+		if not container.states[text] then
+			TweenService:Create(boxBtn, fastTween, {BackgroundColor3 = colors.backgroundSecondary}):Play()
+		end
+	end)
+
+	-- Click toggle (gọi Set để xử lý duy nhất 1 toggle bật)
+	boxBtn.MouseButton1Click:Connect(function()
+		if not container.states[text] then
+			TweenService:Create(boxBtn, tweenInfo, {BackgroundColor3 = colors.accent}):Play()
+			TweenService:Create(boxBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 52, 0, 27)}):Play()
+			task.delay(0.1, function()
+				TweenService:Create(boxBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 50, 0, 25)}):Play()
+			end)
+
+			container:Set(text, true)
+		end
+	end)
+
+	-- Lưu lại toggle
+	container.boxes[#container.boxes + 1] = boxBtn
+	container.callbacks[text] = callback
+	container.states[text] = defaultValue or false
+
+	container.updateSize()
+	return boxBtn
+end
         
         -- Enhanced Button Switch (Full Width) (kích thước nhỏ hơn)
         function tab:CreateButtonSwitch(text, options, defaultIndex, callback)

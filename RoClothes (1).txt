@@ -1,7 +1,7 @@
 --[[	
 
 	/ ｒｏｃｌｏｔｈｅｓ
-	Version - 0.1.3
+	Version - 0.1.3(fixed)
 	| RoClothes is a Client-Sided Exploiting Script, that allows the player to have nude BodyParts/Clothes
 	Can be used on any executor
 	
@@ -16119,35 +16119,34 @@ BodyTab:CreateButtonSwitch(
 )
 
 local container = BundleTab:CreateToggleBoxContainer()
-local Bundle = { -- (đoạn bạn gửi bên trên, không dán lại để ngắn gọn) }
 
-local currentToggle = nil
-
-for bundleName, bundleData in pairs(Bundle) do
+for bundleName, _ in pairs(Bundle) do
 	BundleTab:CreateToggleBox(bundleName, false, function(state)
 		if state then
-			-- Tắt cái trước đó nếu có
-			if currentToggle and currentToggle ~= bundleName then
-				container:Set(bundleName, false) -- tạm thời chưa được hỗ trợ, dùng cách dưới
-			end
+			-- Tắt tất cả toggle khác
+			container:ResetAll()
 
-			currentToggle = bundleName
-			print("Bundle selected:", bundleName)
+			-- Bật lại toggle hiện tại
+			container:Set(bundleName, true)
 
-			-- Cập nhật PlayerData nếu bạn cần lưu
+			-- Cập nhật bundle đang chọn
 			PlayerData[Data].CurrentBundle = bundleName
 
-			-- Gọi hàm áp dụng bundle
+			-- Áp dụng bundle lên nhân vật
 			ApplyBundleToCharacter(bundleName)
 		else
-			-- Nếu người dùng tắt chính cái đang bật
-			if currentToggle == bundleName then
-				currentToggle = nil
+			-- Nếu tắt chính bundle đang chọn, thì reset
+			if PlayerData[Data].CurrentBundle == bundleName then
 				PlayerData[Data].CurrentBundle = nil
-				ApplyBundleToCharacter(nil) -- reset hoặc xóa bundle
+				ApplyBundleToCharacter(nil)
 			end
 		end
 	end, container)
+end
+
+-- Nếu đã có bundle được chọn trước đó → tự bật toggle tương ứng
+if PlayerData[Data].CurrentBundle and Bundle[PlayerData[Data].CurrentBundle] then
+	container:Set(PlayerData[Data].CurrentBundle, true)
 end
 	
 end

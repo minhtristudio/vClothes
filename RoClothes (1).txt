@@ -1,7 +1,7 @@
 --[[	
 
 	/ ｒｏｃｌｏｔｈｅｓ
-	Version - 0.1.3(fixed 2)
+	Version - 0.1.3(fixed bundle)
 	| RoClothes is a Client-Sided Exploiting Script, that allows the player to have nude BodyParts/Clothes
 	Can be used on any executor
 	
@@ -16119,32 +16119,36 @@ BodyTab:CreateButtonSwitch(
 )
 
 local container = BundleTab:CreateToggleBoxContainer()
-
--- Tạo bảng quản lý trạng thái
 local toggleStates = {}
+local isProgrammatic = false -- Biến cờ để tránh callback lặp
 
 for bundleName, _ in pairs(Bundle) do
     toggleStates[bundleName] = false
-    
+
     BundleTab:CreateToggleBox(bundleName, false, function(state)
-        -- Cập nhật trạng thái trước
-        toggleStates[bundleName] = state
-        
+        if isProgrammatic then return end -- Nếu đang cập nhật bằng code thì bỏ qua callback
+
+        -- Khi người dùng chọn bundle
         if state then
-            -- Tắt tất cả toggle UI và logic
+            -- Tắt tất cả toggle khác
+            isProgrammatic = true
             for name, _ in pairs(toggleStates) do
                 if name ~= bundleName then
                     toggleStates[name] = false
-                    container:Set(name, false) -- Cập nhật UI
+                    container:Set(name, false)
                 end
             end
-            
-            -- Cập nhật dữ liệu
+            isProgrammatic = false
+
+            -- Lưu trạng thái
+            toggleStates[bundleName] = true
             PlayerData[SelectPlayer].CurrentBundle = bundleName
             ApplyBundleToCharacter(bundleName)
         else
+            -- Nếu tắt bundle đang chọn, clear trạng thái
             if PlayerData[SelectPlayer].CurrentBundle == bundleName then
                 PlayerData[SelectPlayer].CurrentBundle = nil
+                toggleStates[bundleName] = false
                 ApplyBundleToCharacter(nil)
             end
         end
@@ -16153,8 +16157,10 @@ end
 
 -- Khởi tạo toggle từ dữ liệu đã lưu
 if PlayerData[SelectPlayer].CurrentBundle then
+    isProgrammatic = true
     container:Set(PlayerData[SelectPlayer].CurrentBundle, true)
     toggleStates[PlayerData[SelectPlayer].CurrentBundle] = true
+    isProgrammatic = false
 end
 	
 end

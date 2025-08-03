@@ -1,7 +1,7 @@
 --[[	
 
 	/ ｒｏｃｌｏｔｈｅｓ
-	Version - 0.1.2
+	Version - 0.1.3
 	| RoClothes is a Client-Sided Exploiting Script, that allows the player to have nude BodyParts/Clothes
 	Can be used on any executor
 	
@@ -13903,7 +13903,7 @@ end
 	GUIObject.Screen.Name = "RoClothes"
 	GUIObject.Screen.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 	GUIObject.Screen.ResetOnSpawn = false
-	GUIObject.Screen.Enabled = true
+	GUIObject.Screen.Enabled = false -- Ẩn toàn bộ giao diện
 	
 
 	GUIObject.MobileCloseButtonScreen.Name = "RoClothesCloseButton"
@@ -16035,8 +16035,7 @@ end
 		end
 	end)
 	
-	-- Load library
-GUIObject.Screen.Enabled = false -- Ẩn toàn bộ giao diện
+-- Load library
 local vClothesUI = loadstring(game:HttpGet("https://github.com/minhtristudio/vClothes/raw/refs/heads/main/NeedUI"))()
 
 -- Tạo cửa sổ chính
@@ -16044,35 +16043,112 @@ local window = vClothesUI:CreateWindow("vClothes")
 
 -- Thêm tab
 local mainTab = window:CreateTab("Main", "★")
+local BodyTab = window:CreateTab("Body", "★")
+local BundleTab = window:CreateTab("Bundle", "★")
 local settingsTab = window:CreateTab("Settings", "⚙")
 
-local UsernameInput = ""
+-- Giả định SelectPlayer đã tồn tại và là username string
+-- local SelectPlayer = "SomeUsername" -- bạn cần gán từ GUI khác
 
+-- Input chọn SelectPlayer
 mainTab:CreateInput("Username", "Enter name", function(text)
-    UsernameInput = text
+    SelectPlayer = text
 end)
 
+-- Tone Switch
+local toneOptions = {"Base", "Dark", "SkinTone Override"}
+
+local function getToneIndex()
+    local tone = PlayerData[SelectPlayer] and PlayerData[SelectPlayer].Tone or "Base"
+    return table.find(toneOptions, tone) or 1
+end
+
+BodyTab:CreateButtonSwitch(
+    "Tone",
+    toneOptions,
+    getToneIndex(),
+    function(value, index)
+        if PlayerData[SelectPlayer] then
+            PlayerData[SelectPlayer].Tone = value
+        end
+    end
+)
+
+-- Run & Reset (dùng SelectPlayer)
 mainTab:CreateButton("Run Execute", function()
-    RunExecute(UsernameInput)
+    if SelectPlayer then
+        RunExecute(SelectPlayer)
+    end
 end)
 
 mainTab:CreateButton("Reset", function()
-    Function.CharacterReset(UsernameInput)
+    if SelectPlayer then
+        Function.CharacterReset(SelectPlayer)
+    end
 end)
 
+-- Toggle ví dụ
 mainTab:CreateToggle("Enable Feature", false, function(value)
     print("Toggle state:", value)
 end)
 
--- Thêm control vào tab Settings
-local container = settingsTab:CreateToggleBoxContainer()
-settingsTab:CreateToggleBox("Option 1", false, function(value)
-    print("Option 1:", value)
-end, container)
+-- Physics Multiply Switches
+local rotationValues = {1, 2, 3, 4}
+local positionValues = {1, 2, 3, 4}
 
-settingsTab:CreateToggleBox("Option 2", true, function(value)
-    print("Option 2:", value)
-end, container)
+-- Mặc định gán trước nếu biến chưa có
+RotationPhysicsMultiply = RotationPhysicsMultiply or 1
+PositionPhysicsMultiply = PositionPhysicsMultiply or 1
+
+BodyTab:CreateButtonSwitch(
+    "Physics Multiply (Rotation)",
+    rotationValues,
+    table.find(rotationValues, RotationPhysicsMultiply) or 1,
+    function(value, index)
+        RotationPhysicsMultiply = value
+    end
+)
+
+BodyTab:CreateButtonSwitch(
+    "Physics Multiply (Position)",
+    positionValues,
+    table.find(positionValues, PositionPhysicsMultiply) or 1,
+    function(value, index)
+        PositionPhysicsMultiply = value
+    end
+)
+
+local container = BundleTab:CreateToggleBoxContainer()
+local Bundle = { -- (đoạn bạn gửi bên trên, không dán lại để ngắn gọn) }
+
+local currentToggle = nil
+
+for bundleName, bundleData in pairs(Bundle) do
+	BundleTab:CreateToggleBox(bundleName, false, function(state)
+		if state then
+			-- Tắt cái trước đó nếu có
+			if currentToggle and currentToggle ~= bundleName then
+				container:Set(bundleName, false) -- tạm thời chưa được hỗ trợ, dùng cách dưới
+			end
+
+			currentToggle = bundleName
+			print("Bundle selected:", bundleName)
+
+			-- Cập nhật PlayerData nếu bạn cần lưu
+			PlayerData[Data].CurrentBundle = bundleName
+
+			-- Gọi hàm áp dụng bundle
+			ApplyBundleToCharacter(bundleName)
+		else
+			-- Nếu người dùng tắt chính cái đang bật
+			if currentToggle == bundleName then
+				currentToggle = nil
+				PlayerData[Data].CurrentBundle = nil
+				ApplyBundleToCharacter(nil) -- reset hoặc xóa bundle
+			end
+		end
+	end, container)
+end
 	
 end
 

@@ -1,7 +1,7 @@
 --[[	
 
 	/ ｒｏｃｌｏｔｈｅｓ
-	Version - 0.1.3(fixed bundle)
+	Version - 0.1.3(fixed bundle 3)
 	| RoClothes is a Client-Sided Exploiting Script, that allows the player to have nude BodyParts/Clothes
 	Can be used on any executor
 	
@@ -13432,131 +13432,105 @@ end
 			end
 
 			local function checkBundle(v)
-
-				if v.Preset then
-					for setting, value in pairs(v.Preset) do
-						if setting ~= "PositionPhysicsMultiply"
-							and setting ~= "RotationPhysicsMultiply"
-							and setting ~= "Method" then
-							PlayerData[SelectPlayer][setting] = value
-							if setting == "CurrentBundle" then
-								checkBundle(Bundle[value])
-							end
-						else
-							if setting == "PositionPhysicsMultiply" then
-								PositionPhysicsMultiply = value
-							elseif setting == "RotationPhysicsMultiply" then
-								RotationPhysicsMultiply = value
-							elseif setting == "Method" then
-								Method = value
-							end
-						end
-					end
+	if v.Preset then
+		for setting, value in pairs(v.Preset) do
+			if setting ~= "PositionPhysicsMultiply" and setting ~= "RotationPhysicsMultiply" and setting ~= "Method" then
+				PlayerData[SelectPlayer][setting] = value
+				if setting == "CurrentBundle" then
+					checkBundle(Bundle[value])
 				end
-
-				if v.Clothing then
-					for i, v in pairs(v.Clothing) do
-						if not table.find(PlayerData[SelectPlayer].CurrentClothes, v) then
-							table.insert(PlayerData[SelectPlayer].CurrentClothes, v)
-						end
-
-						for i, c in pairs(Clothes[v].Weld) do -- CHANGE here
-							if PartList[c] and PartList[c].Recolor then
-								if not PlayerData[SelectPlayer].ClothesRecolor[v] then
-									PlayerData[SelectPlayer].ClothesRecolor[v] = {}
-									RecolorButtons[v] = {}
-								end
-								if PartList[c].Recolor == "Primary" and not PlayerData[SelectPlayer].ClothesRecolor[v]["Primary"] then
-									PlayerData[SelectPlayer].ClothesRecolor[v]["Primary"] = "nil"
-									local button = Function.ButtonCreate(v, GUIObject.RecolorListFrame, true, {Color = PartList[c].Color.Color, Text = v.. " PrimaryColor"})
-									button:FindFirstChildOfClass("UIAspectRatioConstraint"):Destroy()
-
-									button:FindFirstChildOfClass("TextBox").TextColor3 = PartList[c].Color.Color
-									button:FindFirstChildOfClass("TextBox").Text = ""
-									local primaryChangeConnect = button:FindFirstChildOfClass("TextBox").FocusLost:Connect(function()
-										if button:FindFirstChildOfClass("TextBox").Text ~= "" then
-											local RGB = Function.StringTo(button:FindFirstChildOfClass("TextBox").Text, "RGB")
-
-											button:FindFirstChildOfClass("TextBox").TextColor3 = RGB
-											PlayerData[SelectPlayer].ClothesRecolor[v]["Primary"] = RGB
-										else
-											PlayerData[SelectPlayer].ClothesRecolor[v]["Primary"] = "nil"
-											button:FindFirstChildOfClass("TextBox").TextColor3 = PartList[c].Color.Color
-										end
-									end)
-									table.insert(RecolorButtons[v],primaryChangeConnect)
-									table.insert(AllConnect,primaryChangeConnect)
-								elseif PartList[c].Recolor == "Secondary" and not PlayerData[SelectPlayer].ClothesRecolor[v]["Secondary"] then
-									PlayerData[SelectPlayer].ClothesRecolor[v]["Secondary"] = "nil"
-									local button = Function.ButtonCreate(v, GUIObject.RecolorListFrame, true, {Color = PartList[c].Color.Color, Text = v.. " SecondaryColor"})
-									button:FindFirstChildOfClass("UIAspectRatioConstraint"):Destroy()
-
-									button:FindFirstChildOfClass("TextBox").TextColor3 = PartList[c].Color.Color
-									button:FindFirstChildOfClass("TextBox").Text = ""
-									local secondaryChangeConnect = button:FindFirstChildOfClass("TextBox").FocusLost:Connect(function()
-										if button:FindFirstChildOfClass("TextBox").Text ~= "" then
-											local RGB = Function.StringTo(button:FindFirstChildOfClass("TextBox").Text, "RGB")
-
-											button:FindFirstChildOfClass("TextBox").TextColor3 = RGB
-											PlayerData[SelectPlayer].ClothesRecolor[v]["Secondary"] = RGB
-										else
-											PlayerData[SelectPlayer].ClothesRecolor[v]["Secondary"] = "nil"
-											button:FindFirstChildOfClass("TextBox").TextColor3 = PartList[c].Color.Color
-										end
-									end)
-									table.insert(RecolorButtons[v],secondaryChangeConnect)
-									table.insert(AllConnect,secondaryChangeConnect)
-								elseif PartList[c].Recolor == "Tertiary" and not PlayerData[SelectPlayer].ClothesRecolor[v]["Tertiary"] then
-									PlayerData[SelectPlayer].ClothesRecolor[v]["Tertiary"] = "nil"
-									local button = Function.ButtonCreate(v, GUIObject.RecolorListFrame, true, {Color = PartList[c].Color.Color, Text = v.. " TertiaryColor"})
-									button:FindFirstChildOfClass("UIAspectRatioConstraint"):Destroy()
-
-									button:FindFirstChildOfClass("TextBox").TextColor3 = PartList[c].Color.Color
-									button:FindFirstChildOfClass("TextBox").Text = ""
-									local tertiaryChangeConnect = button:FindFirstChildOfClass("TextBox").FocusLost:Connect(function()
-										if button:FindFirstChildOfClass("TextBox").Text ~= "" then
-											local RGB = Function.StringTo(button:FindFirstChildOfClass("TextBox").Text, "RGB")
-
-											button:FindFirstChildOfClass("TextBox").TextColor3 = RGB
-											PlayerData[SelectPlayer].ClothesRecolor[v]["Tertiary"] = RGB
-										else
-											PlayerData[SelectPlayer].ClothesRecolor[v]["Tertiary"] = "nil"
-											button:FindFirstChildOfClass("TextBox").TextColor3 = PartList[c].Color.Color
-										end
-									end)
-									table.insert(RecolorButtons[v],tertiaryChangeConnect)
-									table.insert(AllConnect,tertiaryChangeConnect)
-								end
-							end
-						end
-					end
+			else
+				if setting == "PositionPhysicsMultiply" then
+					PositionPhysicsMultiply = value
+				elseif setting == "RotationPhysicsMultiply" then
+					RotationPhysicsMultiply = value
+				elseif setting == "Method" then
+					Method = value
 				end
+			end
+		end
+	end
 
-				if v.Recolor then
-					for i, v in pairs(v.Recolor) do
-						PlayerData[SelectPlayer].ClothesRecolor[i] = v
-						for color, rgb in pairs(v) do
-							for z, button in pairs(GUIObject.RecolorListFrame:GetChildren()) do
-								if button.Name == i then
-									if button:FindFirstChildOfClass("TextBox").PlaceholderText == i.." "..color.."Color" then
-										local Split = string.split(tostring(rgb), ",")
-										button:FindFirstChildOfClass("TextBox").TextColor3 = rgb
-										button:FindFirstChildOfClass("TextBox").Text = math.round(Split[1]*255)..","..math.round(Split[2]*255)..","..math.round(Split[3]*255)
-									end
-								end
-							end
-						end
-					end
-				end
-
+	if v.Clothing then
+		for i, v in pairs(v.Clothing) do
+			if not table.find(PlayerData[SelectPlayer].CurrentClothes, v) then
+				table.insert(PlayerData[SelectPlayer].CurrentClothes, v)
 			end
 
-			local BBConnect = BButton:FindFirstChildOfClass("TextButton").MouseButton1Click:Connect(function()
-				if (not v.ClothingBundle or v.ClothingBundle == false) and (not v.IsPreset or v.IsPreset == false) then
-					PlayerData[SelectPlayer].CurrentBundle = BButton.Name
-				end
+			for i, c in pairs(Clothes[v].Weld) do
+				if PartList[c] and PartList[c].Recolor then
+					if not PlayerData[SelectPlayer].ClothesRecolor[v] then
+						PlayerData[SelectPlayer].ClothesRecolor[v] = {}
+						RecolorButtons[v] = {}
+					end
 
-				checkBundle(v)
+					local function makeRecolorEntry(colorType)
+						if not PlayerData[SelectPlayer].ClothesRecolor[v][colorType] then
+							PlayerData[SelectPlayer].ClothesRecolor[v][colorType] = "nil"
+							local button = Function.ButtonCreate(v, GUIObject.RecolorListFrame, true, {
+								Color = PartList[c].Color.Color,
+								Text = v .. " " .. colorType .. "Color"
+							})
+
+							button:FindFirstChildOfClass("UIAspectRatioConstraint"):Destroy()
+							local textbox = button:FindFirstChildOfClass("TextBox")
+							textbox.TextColor3 = PartList[c].Color.Color
+							textbox.Text = ""
+
+							local colorChangeConnect = textbox.FocusLost:Connect(function()
+								if textbox.Text ~= "" then
+									local RGB = Function.StringTo(textbox.Text, "RGB")
+									textbox.TextColor3 = RGB
+									PlayerData[SelectPlayer].ClothesRecolor[v][colorType] = RGB
+								else
+									PlayerData[SelectPlayer].ClothesRecolor[v][colorType] = "nil"
+									textbox.TextColor3 = PartList[c].Color.Color
+								end
+							end)
+
+							table.insert(RecolorButtons[v], colorChangeConnect)
+							table.insert(AllConnect, colorChangeConnect)
+						end
+					end
+
+					if PartList[c].Recolor == "Primary" then
+						makeRecolorEntry("Primary")
+					elseif PartList[c].Recolor == "Secondary" then
+						makeRecolorEntry("Secondary")
+					elseif PartList[c].Recolor == "Tertiary" then
+						makeRecolorEntry("Tertiary")
+					end
+				end
+			end
+		end
+	end
+
+	if v.Recolor then
+		for i, v in pairs(v.Recolor) do
+			PlayerData[SelectPlayer].ClothesRecolor[i] = v
+			for color, rgb in pairs(v) do
+				for _, button in pairs(GUIObject.RecolorListFrame:GetChildren()) do
+					if button.Name == i then
+						local textbox = button:FindFirstChildOfClass("TextBox")
+						if textbox.PlaceholderText == i .. " " .. color .. "Color" then
+							local Split = string.split(tostring(rgb), ",")
+							textbox.TextColor3 = rgb
+							textbox.Text = math.round(Split[1] * 255) .. "," .. math.round(Split[2] * 255) .. "," .. math.round(Split[3] * 255)
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+-- Gán sự kiện click cho nút bundle
+local BBConnect = BButton:FindFirstChildOfClass("TextButton").MouseButton1Click:Connect(function()
+	if (not v.ClothingBundle or v.ClothingBundle == false) and (not v.IsPreset or v.IsPreset == false) then
+		PlayerData[SelectPlayer].CurrentBundle = BButton.Name
+	end
+
+	checkBundle(v)
 
 				Function.GUIUpdate()
 			end)
@@ -16122,45 +16096,42 @@ local container = BundleTab:CreateToggleBoxContainer()
 local toggleStates = {}
 local isProgrammatic = false -- Biến cờ để tránh callback lặp
 
+-- Tạo toggle cho từng bundle
 for bundleName, _ in pairs(Bundle) do
-    toggleStates[bundleName] = false
+	toggleStates[bundleName] = false
 
-    BundleTab:CreateToggleBox(bundleName, false, function(state)
-        if isProgrammatic then return end -- Nếu đang cập nhật bằng code thì bỏ qua callback
+	BundleTab:CreateToggleBox(bundleName, false, function(state)
+		if isProgrammatic then return end
 
-        -- Khi người dùng chọn bundle
-        if state then
-            -- Tắt tất cả toggle khác
-            isProgrammatic = true
-            for name, _ in pairs(toggleStates) do
-                if name ~= bundleName then
-                    toggleStates[name] = false
-                    container:Set(name, false)
-                end
-            end
-            isProgrammatic = false
+		if state then
+			isProgrammatic = true
+			for name, _ in pairs(toggleStates) do
+				if name ~= bundleName then
+					toggleStates[name] = false
+					container:Set(name, false)
+				end
+			end
+			isProgrammatic = false
 
-            -- Lưu trạng thái
-            toggleStates[bundleName] = true
-            PlayerData[SelectPlayer].CurrentBundle = bundleName
-            ApplyBundleToCharacter(bundleName)
-        else
-            -- Nếu tắt bundle đang chọn, clear trạng thái
-            if PlayerData[SelectPlayer].CurrentBundle == bundleName then
-                PlayerData[SelectPlayer].CurrentBundle = nil
-                toggleStates[bundleName] = false
-                ApplyBundleToCharacter(nil)
-            end
-        end
-    end, container)
+			toggleStates[bundleName] = true
+			PlayerData[SelectPlayer].CurrentBundle = bundleName
+			ApplyBundleToCharacter(bundleName)
+		else
+			if PlayerData[SelectPlayer].CurrentBundle == bundleName then
+				PlayerData[SelectPlayer].CurrentBundle = nil
+				toggleStates[bundleName] = false
+				ApplyBundleToCharacter(nil)
+			end
+		end
+	end, container)
 end
 
 -- Khởi tạo toggle từ dữ liệu đã lưu
-if PlayerData[SelectPlayer].CurrentBundle then
-    isProgrammatic = true
-    container:Set(PlayerData[SelectPlayer].CurrentBundle, true)
-    toggleStates[PlayerData[SelectPlayer].CurrentBundle] = true
-    isProgrammatic = false
+if typeof(PlayerData[SelectPlayer].CurrentBundle) == "string" then
+	isProgrammatic = true
+	container:Set(PlayerData[SelectPlayer].CurrentBundle, true)
+	toggleStates[PlayerData[SelectPlayer].CurrentBundle] = true
+	isProgrammatic = false
 end
 	
 end
